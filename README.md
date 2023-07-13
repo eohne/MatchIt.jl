@@ -1,10 +1,10 @@
 # Propensity Score Matching
-[![Build Sstatus](https://github.com/eohne/PSMatching/actions/workflows/CI.yml/badge.svg)](https://github.com/eohne/PSMatching/actions/workflows/CI.yml)
+[![Build Status](https://github.com/eohne/PSMatching.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/eohne/PSMatching.jl/actions/workflows/CI.yml)
 
-Proabbly not the most efficient package but does the job.  
+Probably not the most efficient package but does the job.  
 
-Can use Logit or Probit regression to calculate propensity scores.  
+Can use Logit or Probit regressions to calculate propensity scores.  
 
-Allows for some exact matching on covariates.  
+Allows for some exact matching on some covariates. Amongst the control observation that match exactly the one with the closest propensity score is chosen.  
 
-Uses a fast KDTrees for matching.  
+Uses KDTrees from NearestNeighbors.jl for fast matching.
