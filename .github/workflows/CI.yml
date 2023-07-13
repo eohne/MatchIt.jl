@@ -1,5 +1,5 @@
 name: CI
-on:
+on: [push, pull_request]
   push:
     branches:
       - master
@@ -19,8 +19,6 @@ jobs:
       matrix:
         version:
           - '1.6'
-          - '1.7'
-          - '1.9'
           - 'nightly'
         os:
           - ubuntu-latest
