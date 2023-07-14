@@ -1,4 +1,4 @@
-function match_table(d::PSM)
+function match_table(d::MatchedIt)
     df = select(d.df, findall(col -> all(v -> v isa Number, col), eachcol(d.df)))
     matched = select(d.matched, findall(col -> all(v -> v isa Number, col), eachcol(d.matched )))
     select!(matched, Not(:dist))

@@ -1,4 +1,4 @@
-function balance_plot(df::PSM,barmode="overlay",logscale=false)
+function balance_plot(df::MatchedIt,barmode="overlay",logscale=false)
     if barmode=="overlay"
         opacity = 0.8
     else

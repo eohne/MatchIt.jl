@@ -14,9 +14,9 @@ Calculates the Propensity Scores and returns a `DataFrame` with a new column `:P
   * `DataFrame` containing the original data without missing values that has a new column (`:PS`) with the propensity scores. 
 
 """
-function get_propensities(data::DataFrame,T::String,X::Vector{String},link::GLM.Link01)
+function get_propensities(data::DataFrame,f::FormulaTerm,link::GLM.Link01)
     out = copy(data)
-    if any([any(ismissing.(i)) for i in eachcol(data)])
+    if any([any(ismissing.(i)) for i in eachcol(out)])
         before = nrow(out)
         dropmissing!(out)
         after = nrow(out)
@@ -26,9 +26,8 @@ function get_propensities(data::DataFrame,T::String,X::Vector{String},link::GLM.
     if in("PS", names(out))
         @warn "PS variable already exists in DataFrame. The variable will be dropped and replaced with the calculated propensity score!"
     end
-    
-    fm = term(Symbol(T)) ~ sum(term.(Symbol.(X)))
-    out.PS = predict(glm(fm, out, Binomial(), link ))
+
+    out.PS = predict(glm(f, out, Binomial(), link ))
     return out
 end
 
@@ -47,7 +46,7 @@ Calculates the Propensity Scores and returns a `DataFrame` with a new column `:P
   * `DataFrame` containing the original data without missing values that has a new column (`:PS`) with the propensity scores. 
 
 """
-function get_propensities!(data::DataFrame,T::String,X::Vector{String},link::GLM.Link01)
+function get_propensities!(data::DataFrame,f::FormulaTerm,link::GLM.Link01)
     if any([any(ismissing.(i)) for i in eachcol(data)])
         before = nrow(data)
         dropmissing!(data)
@@ -58,8 +57,6 @@ function get_propensities!(data::DataFrame,T::String,X::Vector{String},link::GLM
     if in("PS", names(data))
         @warn "PS variable already exists in DataFrame. The variable will be dropped and replaced with the calculated propensity score!"
     end
-
-    fm = term(Symbol(T)) ~ sum(term.(Symbol.(X)))
-    data.PS = predict(glm(fm, data, Binomial(), link ))
+    data.PS = predict(glm(f, data, Binomial(), link ))
     return data::DataFrame
 end

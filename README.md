@@ -1,5 +1,5 @@
-# Propensity Score Matching
-[![Build Status](https://github.com/eohne/PSMatching.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/eohne/PSMatching.jl/actions/workflows/CI.yml)
+# Match It
+[![Build Status](https://github.com/eohne/MatchIt.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/eohne/MatchIt.jl/actions/workflows/CI.yml)
 
 Probably not the most efficient package but does the job.  
 
