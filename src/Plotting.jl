@@ -1,3 +1,17 @@
+"""
+    balance_plot(df::MatchedIt,barmode="overlay",logscale=false)
+
+Creates a plot with two histograms showing the balance of propensity scores before and after matching.
+
+# Arguments:
+  * df`::MatchedIt`: The output of a function call to `matchit`
+  * barmode: whehter the bars of the histogram should be overlayed (`"overlay"`).
+  * logscale`::Bool`: whether the yaxis should be printed on a log-scale (defaults to `false`)
+
+# Output
+A `PlotlyJS.SyncPlot`
+
+"""
 function balance_plot(df::MatchedIt,barmode="overlay",logscale=false)
     if barmode=="overlay"
         opacity = 0.8
