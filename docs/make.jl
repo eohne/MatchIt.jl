@@ -17,6 +17,8 @@ makedocs(
                ])
 deploydocs(;
     repo="github.com/eohne/MatchIt.jl",
+    target = "build",
     devurl = "dev",
+    branch = "gh-pages",
     versions = ["stable" => "v^", "v#.#", "dev" => "dev"]
 )
