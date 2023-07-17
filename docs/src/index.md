@@ -14,3 +14,6 @@ The currently implemented functionality has been crosschecked with the `lalonda.
 ## Installation
 
 You can manually install it by: 
+```julia
+Pkg.clone("https://github.com/eohne/MatchIt.jl")
+```
