@@ -3,7 +3,8 @@ using MatchIt
 using Documenter
 makedocs(
          sitename = "MatchIt.jl",
-         format = Documenter.HTML(analytics = "G-LFRFQ0X1VF",
+         format = Documenter.HTML(
+            # analytics = "G-LFRFQ0X1VF",
          canonical = "https://eohne.github.io/Matchit.jl/dev/"),
          modules  = [MatchIt],
          pages=[
