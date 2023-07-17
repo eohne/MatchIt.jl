@@ -1,8 +1,21 @@
+function pooled_cov(X, t)
+    unique_t = unique(t)
+        n = size(X, 1)
+        for i in unique_t
+            in_t = findall(t .== i)
+            for j in 1:size(X, 2)
+                X[in_t, j] .-= mean(X[in_t, j])
+            end
+        end
+        return cov(X) * (n - 1) / (n - length(unique_t))
+end
+
+
 function _mahalanobis_replace(treat::Matrix,control::Matrix)
     s_c = size(control,1)
     s_t = size(treat,1)
     min_dist, min_idx = Vector{Float64}(undef,s_t), Vector{Int}(undef,s_t) 
-    covariance = cov(control)
+    covariance = pooled_cov(vcat(treat,control),vcat(ones(size(treat,1)),zeros(size(control,1))))
     @inbounds for i in 1:s_t
         d = Inf
         idx = 0 
@@ -30,7 +43,7 @@ function _mahalanobis_no_replace(treat::Matrix,control::Matrix,order::String)
     s_c = size(control,1)
     s_t = size(treat,1)
     min_dist, min_idx = Vector{Float64}(undef,s_t), Vector{Int}(undef,s_t) 
-    covariance = cov(control)
+    covariance = pooled_cov(vcat(treat,control),vcat(ones(size(treat,1)),zeros(size(control,1))))
     used_c = Int.(zeros(s_c))
     if isequal(order, "data")
         sort_idx = collect(1:s_t)
