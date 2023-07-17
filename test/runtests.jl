@@ -2,7 +2,7 @@ using MatchIt
 using DataFrames, PlotlyJS, CSV
 using Test
 
-data = CSV.File("../Example Data/lalonde.csv") |> DataFrame;
+data = CSV.File("TestData/lalonde.csv") |> DataFrame;
 @testset "matchit" begin
     ta = matchit(data,@formula(treat ~ age + educ + race + married + nodegree + re74 + re75),exact = ["married"]);
     ta2 = matchit(data,@formula(treat ~ age + educ + race + married + nodegree + re74 + re75));
