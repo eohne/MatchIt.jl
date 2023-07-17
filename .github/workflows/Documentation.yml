@@ -2,11 +2,7 @@ name: Documentation
 on:
   push:
     branches:
-<<<<<<< HEAD
       - main 
-=======
-      - main
->>>>>>> 08e898020c33164c2b6ef40f80a7f3b7fcf9e370
     tags: '*'
   pull_request:
 
