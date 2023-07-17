@@ -58,7 +58,7 @@ end
 Performs Nearest Neighbor matching. Allows for exact matches on certain variables before performing the nearest neighbor search.
 
 # Arguments:  
-  * data`::DataFrame`: Needs to contain a treatment variable and the propensity score (`:PS`) (optionally the variables that need to be exactly matched)
+  * data`::DataFrame`: Needs to contain a treatment variable and the propensity score (`:Dist`) (optionally the variables that need to be exactly matched)
   * T`::String`: The name of the treatment indicator (0 or 1)
   * exact::`Vector{String}`: A vector of the variable names used for exact matching.
   * maxDist`::Float64`: The maximum allowed distance between nearest neighbors (defaults to `Inf`)
@@ -71,20 +71,20 @@ Performs Nearest Neighbor matching. Allows for exact matches on certain variable
   * tolerance`::Float64`: In matching with replacement it defines the minimum distance that is good enough and no better matches are searched for. (defaults to `-1` meaning that all control observations are compared to each treatment observation)
 
 # Output:
-A `DataFrame` containg the matched sample. Includes all variables from the provided DataFrame plus the distance metric `:dist`
+A `DataFrame` containg the matched sample. Includes all variables from the provided DataFrame plus the distance metric `:Dist`
 """
 function NearestNeighbor(data::DataFrame,T::String,exact=String[],maxDist::Float64=Inf, replacement::Bool=true,order::String="data", tolerance::Float64=-1.)
     if isempty(exact)
         treated = @view data[isequal.(data[:,T],1),:]
         control = @view data[isequal.(data[:,T],0),:]
         if replacement
-            idx, dist = _nearest_neighbor_matching(treated.PS,control.PS)
+            idx, dist = _nearest_neighbor_matching(treated.Dist,control.Dist)
         else
-            idx, dist = _nearest_neighbor_matching(treated.PS,control.PS, order, tolerance)
+            idx, dist = _nearest_neighbor_matching(treated.Dist,control.Dist, order, tolerance)
         end        
         out_c = control[idx,:]
-        out_c.dist = dist
-        treated.dist = dist
+        out_c.Dist = dist
+        treated.Dist = dist
         matched = vcat(out_c,treated)
     else
        data.exact_match .= string.([string.(data[:,i],"_") for i in exact]...)
@@ -102,14 +102,14 @@ function NearestNeighbor(data::DataFrame,T::String,exact=String[],maxDist::Float
             end
             
             if replacement
-                idx, dist = _nearest_neighbor_matching(t_df.PS,c_df.PS)
+                idx, dist = _nearest_neighbor_matching(t_df.Dist,c_df.Dist)
             else
-                idx, dist = _nearest_neighbor_matching(t_df.PS,c_df.PS, order, tolerance)
+                idx, dist = _nearest_neighbor_matching(t_df.Dist,c_df.Dist, order, tolerance)
             end
             out_t = t_df[.!isequal.(idx,-1),:]            
             out_c = c_df[idx[idx.!=-1],:]
-            out_c.dist = dist[idx.!=-1]
-            out_t.dist = dist[idx.!=-1]
+            out_c.Dist = dist[idx.!=-1]
+            out_t.Dist = dist[idx.!=-1]
             append!(matched, out_c)
             append!(matched,out_t)
         end
@@ -122,6 +122,6 @@ function NearestNeighbor(data::DataFrame,T::String,exact=String[],maxDist::Float
         select!(matched,Not(:exact_match))
         select!(data,Not(:exact_match))
     end
-    matched = matched[matched.dist.<=maxDist,:]
+    matched = matched[matched.Dist.<=maxDist,:]
     return matched
 end;

@@ -2,7 +2,7 @@ module MatchIt
 
   # import packages:
     using DataFrames, GLM, PlotlyJS, Statistics,NearestNeighbors
-    using HypothesisTests 
+    using HypothesisTests , Distances
     using Random: randperm
 
     export MatchedIt, matchit,balance_plot
@@ -14,19 +14,19 @@ module MatchIt
     include("Structs.jl")
     include("Propensities.jl")
     include("Matching.jl")
+    include("mahalanobis.jl")
 
 """
-    matchit(df::DataFrame, f::FormulaTerm; link::GLM.Link01=LogitLink(), exact=[], maxDist::Float64=Inf,replacement::Bool=true,order::String="data",tolerance::Float64=-1.)
+    matchit(df::DataFrame, f::FormulaTerm; dist::String = "glm", link::GLM.Link01=LogitLink(), exact=[], maxDist::Float64=Inf,replacement::Bool=true,order::String="data",tolerance::Float64=-1.)
 
-Performs propensity score matching. Also allows for exact matching on certain variables. 
+Performs propensity score or Mahalanobis distance matching. Also allows for exact matching on certain variables. 
 
 # Arguments:  
   * df`::DataFrame`
   * f`::FormulaTerm`::The formula used in the GLM regression. (use @formula() to create it)
-  * T`::String`: The name of the treatment variable (should be 0 or 1)
-  * X`::Vector{String}`: The names of the covariates that are used in the propensity score matching
-  * exact`::Vector`: The names of the variables that should be exactly matched. Defaults to no variables (`[]`)
+  * dist`::String`: Distance measure to be used. One of "glm" (default) or "mahalanobis" ("mahalanobis" is still very experimental and should probably not be used)
   * link`::GLM.Link01`: The link function used for the regression. Either `LogitLink()` (default) or `ProbitLink()`
+  * exact`::Vector`: The names of the variables that should be exactly matched. Defaults to no variables (`[]`)
   * maxDist: The maximum distance between matched treatment and control observations to be included in the sample (defaults to `Inf`)
   * replacement`::Bool`: Whether the matching should occure with or without replacement. Without replacement is much slower and the result depends on the row order. (defaults to `true`)
   * order`::String`: In which order should the matching without replacement take place (defaults to `"data"`). Allows for:  
@@ -44,6 +44,7 @@ Returns a `MatchedIt` struct. It contains:
   * `link`: the Link used (either `LogitLink()` or `ProbitLink()`)
   * `f`: the formula used in the matching process
   * `T`: the name of the treatment indicator variable
+  * `dist_type`: one of glm or mahalanobis
 
 # Example  
 Simple nearest neighbor PSM matching with replacement.  
@@ -54,6 +55,7 @@ julia> m = matchit(input_data, @formula(treat ~ age + educ + race + nodegree + r
 A MatchIt object:
 Treatmeant variable: treat
 Matching formula: treat ~ age + educ + race + nodegree + re74 + re75
+Matched by: GLM
 Link: LogitLink
 Number of observations: 614 (original), 370 (matched)
 ```
@@ -78,16 +80,22 @@ julia> m.matched
 ```
 
 """
-function matchit(df::DataFrame, f::FormulaTerm; link::GLM.Link01=LogitLink(), exact=[], maxDist::Float64=Inf,
+function matchit(df::DataFrame, f::FormulaTerm; dist::String = "glm", link::GLM.Link01=LogitLink(), exact=[], maxDist::Float64=Inf,
   replacement::Bool=true,order::String="data",tolerance::Float64=-1.)
   if typeof(exact) <:AbstractString
     exact = [exact]
   end
-    data = copy(df)
+  data = copy(df)
+  if isequal(lowercase(dist),"glm")
     get_propensities!(data,f,link)
     T = String(StatsModels.termvars(f.lhs)[1])
     matched =NearestNeighbor(data,T,exact,maxDist,replacement, order,tolerance)
-    return MatchedIt(data,matched,link,f,Symbol(T))
+  elseif isequal(lowercase(dist),"mahalanobis")
+    matched = mhn_matching(data, f, exact,repalcement, order)
+  else
+    throw("$dist is not a valid distance measure. Use one of glm or mahalanobis")
+  end
+  return MatchedIt(data,matched,link,f,Symbol(T),dist)
 end
 
     include("Summary.jl")

@@ -21,22 +21,22 @@ function balance_plot(df::MatchedIt,barmode="overlay",logscale=false)
     fig = PlotlyJS.make_subplots(
     rows=1, cols=2,subplot_titles=["<b>Umatched</b>" "<b>Matched</b>" ])
     add_trace!(fig,
-        PlotlyJS.histogram(x = df.df.PS[isequal.(df.df[:,df.T],1)],
+        PlotlyJS.histogram(x = df.df.Dist[isequal.(df.df[:,df.T],1)],
             name="High",opacity=opacity, marker_color="steelblue"),
         row=1,
         col=1)
     add_trace!(fig,
-        PlotlyJS.histogram(x = df.df.PS[isequal.(df.df[:,df.T],0)],
+        PlotlyJS.histogram(x = df.df.Dist[isequal.(df.df[:,df.T],0)],
             name="Low",opacity=opacity,marker_color="orange")
         ,row=1,
         col=1)
     add_trace!(fig,
-        PlotlyJS.histogram(x = df.matched.PS[isequal.(df.matched[:,df.T],1)],
+        PlotlyJS.histogram(x = df.matched.Dist[isequal.(df.matched[:,df.T],1)],
             name="High",opacity=opacity, marker_color="steelblue",showlegend=false),
         row=1,
         col=2)
     add_trace!(fig,
-        PlotlyJS.histogram(x = df.matched.PS[isequal.(df.matched[:,df.T],0)],
+        PlotlyJS.histogram(x = df.matched.Dist[isequal.(df.matched[:,df.T],0)],
             name="Low",opacity=opacity,marker_color="orange",showlegend=false),
         row=1,
         col=2)

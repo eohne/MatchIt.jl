@@ -2,7 +2,7 @@
 """
     get_propensities(data::DataFrame,T::String,X::Vector{String},link::GLM.Link01)
 
-Calculates the Propensity Scores and returns a `DataFrame` with a new column `:PS`.
+Calculates the Propensity Scores and returns a `DataFrame` with a new column `:Dist`.
 
 # Arguments:
   * data`::DataFrame`: The DataFrame containg the data. This should have no missing values. Rows with missing values will be deleted.
@@ -11,7 +11,7 @@ Calculates the Propensity Scores and returns a `DataFrame` with a new column `:P
   * link`::GLM.Link01`: The link function used. One of `LogitLink()` or `ProbitLink()`
 
 # Output
-  * `DataFrame` containing the original data without missing values that has a new column (`:PS`) with the propensity scores. 
+  * `DataFrame` containing the original data without missing values that has a new column (`:Dist`) with the propensity scores. 
 
 """
 function get_propensities(data::DataFrame,f::FormulaTerm,link::GLM.Link01)
@@ -23,11 +23,11 @@ function get_propensities(data::DataFrame,f::FormulaTerm,link::GLM.Link01)
         @warn "Missing values in data. $(before-after) rows with missing values were dropped!"
     end
     
-    if in("PS", names(out))
-        @warn "PS variable already exists in DataFrame. The variable will be dropped and replaced with the calculated propensity score!"
+    if in("Dist", names(out))
+        @warn ":Dist variable already exists in DataFrame. The variable will be dropped and replaced with the calculated propensity score!"
     end
 
-    out.PS = predict(glm(f, out, Binomial(), link ))
+    out.Dist = predict(glm(f, out, Binomial(), link ))
     return out
 end
 
@@ -57,6 +57,6 @@ function get_propensities!(data::DataFrame,f::FormulaTerm,link::GLM.Link01)
     if in("PS", names(data))
         @warn "PS variable already exists in DataFrame. The variable will be dropped and replaced with the calculated propensity score!"
     end
-    data.PS = predict(glm(f, data, Binomial(), link ))
+    data.Dist = predict(glm(f, data, Binomial(), link ))
     return data::DataFrame
 end

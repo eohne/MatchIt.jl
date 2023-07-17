@@ -150,7 +150,7 @@ nodegree│    0.5967       0.7081       0.007
 re74    │    5619.2365    2095.5737    0.0
 re75    │    2466.4844    1532.0553    0.0012
 re78    │    6984.1697    6349.1435    0.3491
-PS      │    0.185        0.5711       0.0
+Dist    │    0.185        0.5711       0.0
 
 
 Summary of Balance for Matched Data:
@@ -164,7 +164,7 @@ nodegree│    0.7568       0.7081       0.2918
 re74    │    1948.422     2095.5737    0.7488
 re75    │    1819.4709    1532.0553    0.3913
 re78    │    6458.5599    6349.1435    0.8863
-PS      │    0.5714       0.5711       0.9905
+Dist    │    0.5714       0.5711       0.9905
 ```
 
 """
@@ -174,7 +174,6 @@ function Base.summary(obj::MatchedIt,test::Bool=false,pre::Bool=false)
     n_treat_matched = sum(obj.matched[:,obj.T])
     n_control_matched = sum(obj.matched[:,obj.T].==0)
     matched = select(obj.matched, findall(col -> all(v -> v isa Number, col), eachcol(obj.matched )))
-    select!(matched, Not(:dist))
     after_not = Statistics.mean(Matrix(matched[matched[:,obj.T].==0,:]),dims=1)'
     after_treated = Statistics.mean(Matrix(matched[matched[:,obj.T].==1,:]),dims=1)'
     n = names(matched)
