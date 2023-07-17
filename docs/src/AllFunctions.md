@@ -1,5 +1,5 @@
 # All Functions
 
 ```@autodocs
-Modules = [YFinance]
+Modules = [MatchIt]
 ```

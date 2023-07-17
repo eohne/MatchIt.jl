@@ -110,10 +110,14 @@ end
  """
     Base.summary(obj::MatchedIt,test::Bool=false,pre::Bool=false)
 
-Gives a summary output for the matched sample. The output includes a summary of the number of observations matched and the mean of all variables in the original and matched dataframe of the treatment and control group. If `test=true` a p-value of a 2 sample Welch test is reported.
+Gives a summary output for the matched sample.  
+The output includes:
+  * A summary of the number of observations matched 
+  * A table of the means of all variables in the original and matched dataframe split into treatment and control group. 
+  * If `test=true` a p-value of a 2 sample Welch test is reported for each variable used in the matching.
 
 # Arguments:
-  * obj::`MatchedIt`: The output from a call to `matchit`
+  * obj`::MatchedIt`: The output from a call to `matchit`
   * test`::Bool`: Whether a difference in mean test (2 sample Welch test) should be performed between treatment and control observations. (defaults to `false`)
   * pre`::Bool`: Whether to also show the output of the means and T-tests for the sample before matching.
   
