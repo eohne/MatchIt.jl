@@ -5,9 +5,9 @@ module MatchIt
     using HypothesisTests 
     using Random: randperm
 
-    export MatchedIt, matchit, balance_plot,match_table
+    export MatchedIt, matchit,balance_plot
     # Re-exports from Base
-    export getfield 
+    export getfield , show, summary
     # Re-exports from GLM
     export LogitLink, ProbitLink, @formula
 
@@ -42,6 +42,7 @@ Returns a `MatchedIt` struct. It contains:
   * `df`: the original `DataFrame` 
   * `matched`: the matched `DataFrame`
   * `link`: the Link used (either `LogitLink()` or `ProbitLink()`)
+  * `f`: the formula used in the matching process
   * `T`: the name of the treatment indicator variable
 
 """
@@ -54,9 +55,9 @@ function matchit(df::DataFrame, f::FormulaTerm; link::GLM.Link01=LogitLink(), ex
     get_propensities!(data,f,link)
     T = String(StatsModels.termvars(f.lhs)[1])
     matched =NearestNeighbor(data,T,exact,maxDist,replacement, order,tolerance)
-    MatchedIt(data,matched,link,Symbol(T))
+    return MatchedIt(data,matched,link,f,Symbol(T))
 end
 
-    include("Balance Table.jl")
+    include("Summary.jl")
     include("Plotting.jl")    
 end

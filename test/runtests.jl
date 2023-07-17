@@ -1,14 +1,36 @@
 using MatchIt
-using DataFrames, GLM, PlotlyJS
+using DataFrames, PlotlyJS, CSV
 using Test
 
-data = DataFrame(y = Int.(round.(rand(100),digits=0)), x1 = rand(100),x2=rand(100),id=repeat(collect(1:10),10))
+data = CSV.File("../Example Data/lalonde.csv") |> DataFrame;
 @testset "matchit" begin
-    ta = matchit(data,@formula(y ~ x1 + x2),exact = ["id"]);
+    ta = matchit(data,@formula(treat ~ age + educ + race + married + nodegree + re74 + re75),exact = ["married"]);
+    ta2 = matchit(data,@formula(treat ~ age + educ + race + married + nodegree + re74 + re75));
+    ta3 = matchit(data,@formula(treat ~ age + educ + race + married + nodegree + re74 + re75),link=ProbitLink());
+    ta4 = matchit(data,@formula(treat ~ age + educ + race + married + nodegree + re74 + re75),exact = ["married"],replacement=false);
+    ta5 = matchit(data,@formula(treat ~ age + educ + race + married + nodegree + re74 + re75),exact = [],replacement=false);
     @test typeof(ta) <: MatchedIt
     @test nrow(ta.df) == nrow(data)
     @test nrow(ta.matched) >0
-    ta2 = match_table(ta);
-    @test typeof(ta2) <: Tuple{DataFrame,DataFrame}
+
+    @test typeof(ta2) <: MatchedIt
+    @test nrow(ta2.df) == nrow(data)
+    @test nrow(ta2.matched) >0
+    
+    @test typeof(ta3) <: MatchedIt
+    @test nrow(ta3.df) == nrow(data)
+    @test nrow(ta3.matched) >0
+    
+    @test typeof(ta4) <: MatchedIt
+    @test nrow(ta4.df) == nrow(data)
+    @test nrow(ta4.matched) >0
+    
+        
+    @test typeof(ta5) <: MatchedIt
+    @test nrow(ta5.df) == nrow(data)
+    @test nrow(ta5.matched) >0
+
+    s = summary(ta,true,true);
+    @test isnothing(s)
     @test typeof(balance_plot(ta)) <: PlotlyJS.SyncPlot
 end
