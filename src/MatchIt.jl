@@ -45,6 +45,38 @@ Returns a `MatchedIt` struct. It contains:
   * `f`: the formula used in the matching process
   * `T`: the name of the treatment indicator variable
 
+# Example  
+Simple nearest neighbor PSM matching with replacement.  
+
+```julia-repl
+julia> m = matchit(input_data, @formula(treat ~ age + educ + race + nodegree + re74 + re75))
+
+A MatchIt object:
+Treatmeant variable: treat
+Matching formula: treat ~ age + educ + race + nodegree + re74 + re75
+Link: LogitLink
+Number of observations: 614 (original), 370 (matched)
+```
+Returning the matched sample:  
+
+```julia-repl
+julia> m.matched
+370×12 DataFrame
+ Row │ Column1  treat  age    educ   race     married  nodegree  re74      re75        ⋯
+     │ String7  Int64  Int64  Int64  String7  Int64    Int64     Float64   Float64     ⋯
+─────┼──────────────────────────────────────────────────────────────────────────────────
+   1 │ PSID368      0     40     11  black          1         1      0.0       0.0     ⋯
+   2 │ PSID202      0     20      9  hispan         1         1      0.0    1283.66     
+   3 │ PSID293      0     31     12  black          1         0      0.0      42.9677   
+   4 │ PSID196      0     18     11  black          0         1      0.0    1367.81     
+  ⋮  │    ⋮       ⋮      ⋮      ⋮       ⋮        ⋮        ⋮         ⋮          ⋮       ⋱
+ 367 │ NSW182       1     25     14  black          1         0  35040.1   11536.6     ⋯
+ 368 │ NSW183       1     35      9  black          1         1  13602.4   13830.6      
+ 369 │ NSW184       1     35      8  black          1         1  13732.1   17976.2      
+ 370 │ NSW185       1     33     11  black          1         1  14660.7   25142.2      
+                                                          3 columns and 362 rows omitted
+```
+
 """
 function matchit(df::DataFrame, f::FormulaTerm; link::GLM.Link01=LogitLink(), exact=[], maxDist::Float64=Inf,
   replacement::Bool=true,order::String="data",tolerance::Float64=-1.)

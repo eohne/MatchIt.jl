@@ -121,6 +121,52 @@ The output includes:
   * test`::Bool`: Whether a difference in mean test (2 sample Welch test) should be performed between treatment and control observations. (defaults to `false`)
   * pre`::Bool`: Whether to also show the output of the means and T-tests for the sample before matching.
   
+# Example
+
+```julia-repl
+julia> m = matchit(input_data, @formula(treat ~ age + educ + race + nodegree + re74 + re75));
+
+julia> summary(m,true,true)
+
+Match Summary
+═════════════════════════════════════════════
+
+Sampel Sizes:
+       │    All    Matched    Unmatched
+───────│───────────────────────────────
+Treat  │    185    185        0
+Control│    429    185        244
+
+
+
+Summary of Balance for All Data:
+Var     │    Mean1        Mean2        P_Value
+────────│─────────────────────────────────────
+treat   │    0.0          1.0          missing
+age     │    28.0303      25.8162      0.0029
+educ    │    10.2354      10.3459      0.5848
+married │    0.5128       0.1892       0.0
+nodegree│    0.5967       0.7081       0.007
+re74    │    5619.2365    2095.5737    0.0
+re75    │    2466.4844    1532.0553    0.0012
+re78    │    6984.1697    6349.1435    0.3491
+PS      │    0.185        0.5711       0.0
+
+
+Summary of Balance for Matched Data:
+Var     │    Mean1        Mean2        P_Value
+────────│─────────────────────────────────────
+treat   │    0.0          1.0          missing
+age     │    24.5622      25.8162      0.1537 
+educ    │    10.1351      10.3459      0.3418
+married │    0.2919       0.1892       0.0208
+nodegree│    0.7568       0.7081       0.2918
+re74    │    1948.422     2095.5737    0.7488
+re75    │    1819.4709    1532.0553    0.3913
+re78    │    6458.5599    6349.1435    0.8863
+PS      │    0.5714       0.5711       0.9905
+```
+
 """
 function Base.summary(obj::MatchedIt,test::Bool=false,pre::Bool=false)
     n_treat = sum(obj.df[:,obj.T])
