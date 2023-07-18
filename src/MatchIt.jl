@@ -91,7 +91,7 @@ function matchit(df::DataFrame, f::FormulaTerm; dist::String = "glm", link::GLM.
     T = String(StatsModels.termvars(f.lhs)[1])
     matched =NearestNeighbor(data,T,exact,maxDist,replacement, order,tolerance)
   elseif isequal(lowercase(dist),"mahalanobis")
-    matched = mhn_matching(data, f, exact,repalcement, order)
+    matched = mhn_matching(data, f, exact,replacement, order)
   else
     throw("$dist is not a valid distance measure. Use one of glm or mahalanobis")
   end
