@@ -13,7 +13,11 @@ The currently implemented functionality has been crosschecked with the `lalonda.
 
 ## Installation
 
-You can manually install it by: 
+The package is NOT registered with the General Registry but you can install the package either by using the Pkg REPL mode (press `]` to enter):
+```
+pkg> add http://github.com/eohne/MatchIt.jl
+```
+or by using Pkg functions
 ```julia
-Pkg.clone("https://github.com/eohne/MatchIt.jl")
+julia> using Pkg; Pkg.add("http://github.com/eohne/MatchIt.jl")
 ```

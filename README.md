@@ -11,8 +11,15 @@ The package further allows for matching exactly on some covariates (e.g. match t
 The currently implemented functionality has been crosschecked with the `lalonda.csv` test data from the `R MatchIt` package and matches the output of the R package.  
 
 ## Package Installation
-```julia
-Pkg.clone("https://github.com/eohne/MatchIt.jl")
+
+The package is NOT registered with the General Registry but you can install the package either by using the Pkg REPL mode (press `]` to enter):
 ```
+pkg> add http://github.com/eohne/MatchIt.jl
+```
+or by using Pkg functions
+```julia
+julia> using Pkg; Pkg.add("http://github.com/eohne/MatchIt.jl")
+```
+
 [docs-stable-img]: https://img.shields.io/badge/docs-dev-blue.svg
 [docs-stable-url]: https://eohne.github.io/MatchIt.jl/dev/
