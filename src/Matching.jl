@@ -83,8 +83,8 @@ function NearestNeighbor(data::DataFrame,T::String,exact=String[],maxDist::Float
             idx, dist = _nearest_neighbor_matching(treated.Dist,control.Dist, order, tolerance)
         end        
         out_c = control[idx,:]
-        out_c.Dist = dist
-        treated.Dist = dist
+        out_c.distance = dist
+        treated.distance = dist
         matched = vcat(out_c,treated)
     else
        data.exact_match .= string.([string.(data[:,i],"_") for i in exact]...)
@@ -108,8 +108,8 @@ function NearestNeighbor(data::DataFrame,T::String,exact=String[],maxDist::Float
             end
             out_t = t_df[.!isequal.(idx,-1),:]            
             out_c = c_df[idx[idx.!=-1],:]
-            out_c.Dist = dist[idx.!=-1]
-            out_t.Dist = dist[idx.!=-1]
+            out_c.distance = dist[idx.!=-1]
+            out_t.distance = dist[idx.!=-1]
             append!(matched, out_c)
             append!(matched,out_t)
         end
@@ -122,6 +122,6 @@ function NearestNeighbor(data::DataFrame,T::String,exact=String[],maxDist::Float
         select!(matched,Not(:exact_match))
         select!(data,Not(:exact_match))
     end
-    matched = matched[matched.Dist.<=maxDist,:]
+    matched = matched[matched.distance.<=maxDist,:]
     return matched
 end;
