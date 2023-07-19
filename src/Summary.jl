@@ -174,6 +174,7 @@ function Base.summary(obj::MatchedIt,test::Bool=false,pre::Bool=false)
     n_treat_matched = sum(obj.matched[:,obj.T])
     n_control_matched = sum(obj.matched[:,obj.T].==0)
     matched = select(obj.matched, findall(col -> all(v -> v isa Number, col), eachcol(obj.matched )))
+    matched = matched[:, Not(:distance)]
     after_not = Statistics.mean(Matrix(matched[matched[:,obj.T].==0,:]),dims=1)'
     after_treated = Statistics.mean(Matrix(matched[matched[:,obj.T].==1,:]),dims=1)'
     n = names(matched)
