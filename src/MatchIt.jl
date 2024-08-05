@@ -82,13 +82,13 @@ julia> m.matched
 """
 function matchit(df::DataFrame, f::FormulaTerm; dist::String = "glm", link::GLM.Link01=LogitLink(), exact=[], maxDist::Float64=Inf,
   replacement::Bool=true,order::String="data",tolerance::Float64=-1.)
+  T = String(StatsModels.termvars(f.lhs)[1])
   if typeof(exact) <:AbstractString
     exact = [exact]
   end
   data = copy(df)
   if isequal(lowercase(dist),"glm")
     get_propensities!(data,f,link)
-    T = String(StatsModels.termvars(f.lhs)[1])
     matched =NearestNeighbor(data,T,exact,maxDist,replacement, order,tolerance)
   elseif isequal(lowercase(dist),"mahalanobis")
     matched = mhn_matching(data, f, exact,replacement, order)

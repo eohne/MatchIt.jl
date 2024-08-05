@@ -92,7 +92,6 @@ function NearestNeighbor(data::DataFrame,T::String,exact=String[],maxDist::Float
         control = @view data[isequal.(data[:,T],0),:]
         matched = DataFrame()
         no_exact_match = 0
-        exact_m = "1_black_"
         for exact_m  in unique(data.exact_match)
             c_df = @view control[isequal.(exact_m,control.exact_match),:]
             t_df = @view treated[isequal.(exact_m,treated.exact_match),:]
